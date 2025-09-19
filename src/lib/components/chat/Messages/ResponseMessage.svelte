@@ -52,6 +52,7 @@
 	import { fade } from 'svelte/transition';
 	import { flyAndScale } from '$lib/utils/transitions';
 	import RegenerateMenu from './ResponseMessage/RegenerateMenu.svelte';
+	import TypewriterAnimation from '$lib/components/common/TypewriterAnimation.svelte';
 
 	interface MessageType {
 		id: string;
@@ -116,6 +117,20 @@
 		}
 	}
 
+	// Show typewriter animation for new empty messages that aren't done yet
+	$: {
+		const currentMessage = history.messages[messageId];
+		if (currentMessage && !currentMessage.done && currentMessage.content === '' && !currentMessage.error) {
+			if (!showTypewriter && !typewriterComplete) {
+				showTypewriter = true;
+			}
+		} else if (currentMessage && currentMessage.content && currentMessage.content.length > 0) {
+			// Message has content, hide typewriter and show content
+			showTypewriter = false;
+			typewriterComplete = true;
+		}
+	}
+
 	export let siblings;
 
 	export let setInputText: Function = () => {};
@@ -162,6 +177,15 @@
 	let generatingImage = false;
 
 	let showRateComment = false;
+	
+	// Typewriter animation state
+	let showTypewriter = false;
+	let typewriterComplete = false;
+	
+	const handleTypewriterComplete = () => {
+		showTypewriter = false;
+		typewriterComplete = true;
+	};
 
 	const copyToClipboard = async (text) => {
 		text = removeAllDetails(text);
@@ -798,7 +822,9 @@
 							</div>
 						{:else}
 							<div class="w-full flex flex-col relative" id="response-content-container">
-								{#if message.content === '' && !message.error && (message?.statusHistory ?? [...(message?.status ? [message?.status] : [])]).length === 0}
+								{#if showTypewriter}
+									<TypewriterAnimation onComplete={handleTypewriterComplete} />
+								{:else if message.content === '' && !message.error && (message?.statusHistory ?? [...(message?.status ? [message?.status] : [])]).length === 0}
 									<Skeleton />
 								{:else if message.content && message.error !== true}
 									<!-- always show message contents even if there's an error -->

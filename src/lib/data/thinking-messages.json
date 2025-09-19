@@ -1,0 +1,15 @@
+{
+  "messages": [
+    "Thinking...",
+    "Analyzing your request...",
+    "Scanning for PII patterns...",
+    "Applying Presidio detection algorithms...",
+    "Processing anonymization protocols...",
+    "Implementing privacy filters...",
+    "Evaluating data sensitivity levels...",
+    "Securing personal identifiers...",
+    "Applying deanonymization safeguards...",
+    "Optimizing response quality...",
+    "Finalizing secure output..."
+  ]
+}
